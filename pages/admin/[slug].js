@@ -1,4 +1,3 @@
-import Metatags from "../../components/Metatags";
 import styles from "../../styles/Home.module.css";
 import AuthCheck from "../../components/AuthCheck";
 import { firestore, auth, serverTimestamp } from "../../lib/firebase";
@@ -8,7 +7,7 @@ import { useRouter } from "next/router";
 
 import { useDocumentData } from "react-firebase-hooks/firestore";
 import { useForm } from "react-hook-form";
-import { ReactMarkdown } from "react-markdown/lib/react-markdown";
+import ReactMarkdown from "react-markdown";
 import Link from "next/link";
 import toast from "react-hot-toast";
 
@@ -101,8 +100,20 @@ function PostForm({ defaultValues, postRef, preview }) {
           />
           <label>Published</label>
         </fieldset>
+        <textarea
+          name="content"
+          ref={register({
+            maxLength: { value: 20000, message: "content is too long" },
+            minLength: { value: 10, message: "content is too short" },
+            required: { value: true, message: "content is required" },
+          })}
+        ></textarea>
 
-        <button type="submit" className="btn-green">
+        {errors.content && (
+          <p className="text-danger">{errors.content.message}</p>
+        )}
+
+        <button type="submit" disabled={!isDirty || !isValid}>
           Save Changes
         </button>
       </div>

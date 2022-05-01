@@ -59,21 +59,19 @@ function CreateNewPost() {
       .doc(slug);
 
     const data = {
+      title,
+      slug,
+      uid,
+      username,
+      published: false,
       content: "# hello world!",
       createdAt: serverTimestamp(),
-      heartCount: 0,
-      published: false,
-      slug,
-      title,
-      uid,
       updatedAt: serverTimestamp(),
-      username,
+      heartCount: 0,
     };
 
     await ref.set(data);
-
     toast.success("Post created!");
-
     router.push(`/admin/${slug}`);
   };
 

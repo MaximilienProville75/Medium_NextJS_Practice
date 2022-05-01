@@ -5,8 +5,15 @@ import { getUserWithUsername, postToJSON } from "../../lib/firebase";
 
 export async function getServerSideProps({ query }) {
   const { username } = query;
+
   const userDoc = await getUserWithUsername(username);
 
+  if (!userDoc) {
+    return {
+      notFound: true,
+    };
+  }
+  // JSON serializable data
   let user = null;
   let posts = null;
 
@@ -17,18 +24,11 @@ export async function getServerSideProps({ query }) {
       .where("published", "==", true)
       .orderBy("createdAt", "desc")
       .limit(5);
-
     posts = (await postsQuery.get()).docs.map(postToJSON);
   }
 
-  if (!userDoc) {
-    return {
-      notFound: true,
-    };
-  }
-
   return {
-    props: { user, posts },
+    props: { user, posts }, // will be passed to the page component as props
   };
 }
 
